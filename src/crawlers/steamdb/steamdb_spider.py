@@ -1,9 +1,29 @@
 import scrapy
+import json
 
 class Game:
-    def __init__(self, name, url):
+    def __init__(self, name, url, store):
         self.name = name
         self.url = url
+        self.store = store
+    
+    @staticmethod
+    def write_games_to_file(list_of_games):
+        dict_of_games = Game.make_dict_of_games(list_of_games)
+        with open('free_games.json', 'w') as f:
+            json.dump(dict_of_games, f)
+
+    @staticmethod
+    def make_dict_of_games(list_of_games):
+        dict_of_games = {}
+        for game in list_of_games:
+            dict_of_games[game.name] = {
+                'name': game.name,
+                'url': game.url,
+                'store': game.store
+            }
+        
+        return dict_of_games
         
 
 class SteamdbSpider(scrapy.Spider):
@@ -16,19 +36,18 @@ class SteamdbSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        games_on_sale = self.getListOfGamesOnSale(response)
-        free_games = self.getFreeGames(games_on_sale)
-        self.logger.info('There are %d free games today', len(free_games))
-        self.write_games_to_file(free_games)
+        games_on_sale = self.get_list_of_games_on_sale(response)
+        free_games = self.get_free_games(games_on_sale)
+        Game.write_games_to_file(free_games)
 
-    def getListOfGamesOnSale(self, response):
+    def get_list_of_games_on_sale(self, response):
         sales_section = response.css('div.sales-section')
         sales_table = sales_section.css('table.table-sales')
         sales_tbody = sales_table.css('tbody')
         sales_games = sales_tbody.css('tr')
         return sales_games
 
-    def getFreeGames(self, games):
+    def get_free_games(self, games):
         free_games = []
         for game in games:
             if self.is_game_free(game):
@@ -47,12 +66,4 @@ class SteamdbSpider(scrapy.Spider):
         game_name = game.css('a.b::text').get()
         game_url = self.steam_url + game.css('a.b::attr(href)').get()
 
-        return Game(game_name, game_url)
-
-    def write_games_to_file(self, list_of_games):
-        with open('free_games.txt', 'w') as f:
-            for game in list_of_games:
-                name = game.name
-                url = game.url
-
-                f.write("%s %s\n" % (name, url))
+        return Game(game_name, game_url, "Steam")
