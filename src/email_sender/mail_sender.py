@@ -1,4 +1,8 @@
 import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+from game import Game
 
 class MailSender:
     sender_email = "freegamesnewsletter@gmail.com"
@@ -14,11 +18,37 @@ class MailSender:
             server.login(self.sender_email, self.sender_password)
 
             for contact in contact_list:
-                self._send_mail(contact, server)
+                message = self._generate_message(contact)
+                self._send_mail(contact, message, server)
+            
+            server.quit()
 
-    def _send_mail(self, contact, server):
-        receiver_email = contact.email
+    def _send_mail(self, receiver, message, server):
+        receiver_email = receiver.email
+        server.sendmail(self.sender_email, receiver_email, message.as_string())
 
-        message = "Hello World"
+    def _generate_message(self, receiver):
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "These games are free-to-keep on Steam today"
+        message["From"] = self.sender_email
+        message["To"] = receiver.email
 
-        server.sendmail(self.sender_email, receiver_email, message)
+        games_list = Game.get_games()
+        text_msg = self._generate_text_message(games_list)
+        html_msg = self._generate_html_message(games_list)
+
+        message.attach(MIMEText(text_msg, "plain"))
+        message.attach(MIMEText(html_msg, "html"))
+
+        return message
+    
+    def _generate_text_message(self, games_list):
+        msg = ""
+        for game in games_list:
+            msg += f"{game.name}: {game.url}\n"
+        
+        return msg
+
+    def _generate_html_message(self, games_list):
+        # TODO
+        return self._generate_text_message(games_list)

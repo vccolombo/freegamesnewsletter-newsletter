@@ -1,30 +1,6 @@
 import scrapy
-import json
 
-class Game:
-    def __init__(self, name, url, store):
-        self.name = name
-        self.url = url
-        self.store = store
-    
-    @staticmethod
-    def write_games_to_file(list_of_games):
-        dict_of_games = Game.make_dict_of_games(list_of_games)
-        with open('free_games.json', 'w') as f:
-            json.dump(dict_of_games, f)
-
-    @staticmethod
-    def make_dict_of_games(list_of_games):
-        dict_of_games = {}
-        for game in list_of_games:
-            dict_of_games[game.name] = {
-                'name': game.name,
-                'url': game.url,
-                'store': game.store
-            }
-        
-        return dict_of_games
-        
+from game import Game
 
 class SteamdbSpider(scrapy.Spider):
     name = 'steamdb'
