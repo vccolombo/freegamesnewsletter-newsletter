@@ -140,4 +140,5 @@ cython_debug/
 
 *.txt
 *.json
+*.csv
 .vscode
