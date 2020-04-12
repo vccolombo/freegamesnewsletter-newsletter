@@ -1,12 +1,13 @@
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import os
 
 from game import Game
 
 class MailSender:
     sender_email = "freegamesnewsletter@gmail.com"
-    sender_password = ""
+    sender_password = os.environ["FREEGAMESNEWSLETTER_PASSWORD"]
 
     # smtp configs
     smtp_domain = "smtp.gmail.com"
