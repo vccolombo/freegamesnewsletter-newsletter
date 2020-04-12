@@ -1,7 +1,8 @@
 import json
+import os
 
 class Game:
-    games_file_path = 'free_games.json'
+    games_file_path = os.path.dirname(os.path.abspath(__file__)) + '/data/free_games.json'
 
     def __init__(self, name, url, store):
         self.name = name

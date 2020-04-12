@@ -1,15 +1,17 @@
 import csv
+import os
 
 class Contact:
+    contacts_file_path = os.path.dirname(os.path.abspath(__file__)) + '/contacts.csv'
+
     def __init__(self, email):
         self.email = email
     
     @staticmethod
     def get_contact_list():
-        contacts_file_path = 'contacts.csv'
         contact_list = []
         
-        with open(contacts_file_path) as f:
+        with open(Contact.contacts_file_path) as f:
             csv_reader = csv.reader(f, delimiter=',')
             for row in csv_reader:
                 contact_email = row[0]
