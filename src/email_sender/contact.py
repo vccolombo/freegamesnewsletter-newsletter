@@ -8,7 +8,7 @@ class Contact:
         self.email = email
     
     @staticmethod
-    def get_contact_list():
+    def get_contacts():
         contact_list = []
         
         with open(Contact.contacts_file_path) as f:
