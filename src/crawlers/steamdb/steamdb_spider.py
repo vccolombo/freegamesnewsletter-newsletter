@@ -12,34 +12,34 @@ class SteamdbSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        games_on_sale = self.get_list_of_games_on_sale(response)
-        free_games = self.get_free_games(games_on_sale)
+        games_on_sale = self._get_list_of_games_on_sale(response)
+        free_games = self._get_free_games(games_on_sale)
         Game.write_games_to_file(free_games)
 
-    def get_list_of_games_on_sale(self, response):
+    def _get_list_of_games_on_sale(self, response):
         sales_section = response.css('div.sales-section')
         sales_table = sales_section.css('table.table-sales')
         sales_tbody = sales_table.css('tbody')
         sales_games = sales_tbody.css('tr')
-        return sales_games
 
-    def get_free_games(self, games):
+        list_of_games_on_sale = []
+        for game in sales_games:
+            new_game = self._make_game(game)
+            list_of_games_on_sale.append(new_game)
+
+        return list_of_games_on_sale
+
+    def _get_free_games(self, games):
         free_games = []
         for game in games:
-            if self.is_game_free(game):
-                new_free_game = self.make_game(game)
-                free_games.append(new_free_game)
+            if game.is_free_to_keep:
+                free_games.append(game)
 
         return free_games
 
-    def is_game_free(self, game):
-        if len(game.css('span.sales-free-to-keep')) > 0:
-            return True
-        else:
-            return False
-
-    def make_game(self, game):
+    def _make_game(self, game):
         game_name = game.css('a.b::text').get()
         game_url = self.steam_url + game.css('a.b::attr(href)').get()
+        game_is_free_to_keep = len(game.css('span.sales-free-to-keep')) > 0
 
-        return Game(game_name, game_url, "Steam")
+        return Game(game_name, game_url, "Steam", game_is_free_to_keep)
