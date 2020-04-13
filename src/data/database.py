@@ -24,7 +24,7 @@ class Database:
             test = self.db[table]
             test.insert_one(data)
         except errors.PyMongoError as err:
-            logging.error("COULDN'T INSERT {data}: " + err)
+            logging.error(f"COULDN'T INSERT {data}: " + err)
     
     def select_all(self, table):
         if self.db is None:
@@ -35,5 +35,5 @@ class Database:
             cursor = self.db[table].find()
             return [document for document in cursor]
         except errors.PyMongoError as err:
-            logging.error("COULDN'T SELECT ALL FROM {table}: " + err)
+            logging.error(f"COULDN'T SELECT ALL FROM {table}: " + err)
             return []
