@@ -14,27 +14,36 @@ class MailSender:
     smtp_port = 465
 
     def send(self, contact_list):
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL(self.smtp_domain, self.smtp_port, context=context) as server:
-            server.login(self.sender_email, self.sender_password)
+        games_list = Game.get_todays_free_games()
+        smtp_client = self._create_smtp_connection()
 
-            for contact in contact_list:
-                message = self._generate_message(contact)
-                self._send_mail(contact, message, server)
+        for contact in contact_list:
+            games_for_this_contact = self._get_games_for_contact(contact, games_list)
+            if games_for_this_contact:
+                message = self._generate_message(contact, games_for_this_contact)
+                self._send_mail(contact, message, smtp_client)
             
-            server.quit()
+        smtp_client.quit()
 
-    def _send_mail(self, receiver, message, server):
+    def _create_smtp_connection(self):
+        context = ssl.create_default_context()
+        smtp_client = smtplib.SMTP_SSL(self.smtp_domain, self.smtp_port, context=context)
+        smtp_client.login(self.sender_email, self.sender_password)
+        return smtp_client
+
+    def _send_mail(self, receiver, message, smtp_client):
         receiver_email = receiver.email
-        server.sendmail(self.sender_email, receiver_email, message.as_string())
+        smtp_client.sendmail(self.sender_email, receiver_email, message.as_string())
 
-    def _generate_message(self, receiver):
+    def _get_games_for_contact(self, contact, games_list):
+        return games_list
+
+    def _generate_message(self, receiver, games_list):
         message = MIMEMultipart("alternative")
         message["Subject"] = "These games are free-to-keep today"
         message["From"] = self.sender_email
         message["To"] = receiver.email
 
-        games_list = Game.get_games()
         text_msg = self._generate_text_message(games_list)
         html_msg = self._generate_html_message(games_list)
 
