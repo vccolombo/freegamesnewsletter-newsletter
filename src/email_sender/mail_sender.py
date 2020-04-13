@@ -13,6 +13,10 @@ class MailSender:
     smtp_domain = "smtp.gmail.com"
     smtp_port = 465
 
+    # headers
+    email_subject = "These games are free-to-keep today"
+    email_priority = "3"
+
     def send(self, contact_list):
         games_list = Game.get_todays_free_games()
         smtp_client = self._create_smtp_connection()
@@ -40,9 +44,10 @@ class MailSender:
 
     def _generate_message(self, receiver, games_list):
         message = MIMEMultipart("alternative")
-        message["Subject"] = "These games are free-to-keep today"
+        message["Subject"] = self.email_subject
         message["From"] = self.sender_email
         message["To"] = receiver.email
+        message["X-Priority"] = self.email_priority
 
         text_msg = self._generate_text_message(games_list)
         html_msg = self._generate_html_message(games_list)
