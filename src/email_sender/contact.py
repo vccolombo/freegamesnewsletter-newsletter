@@ -1,21 +1,22 @@
 import csv
 import os
 
+from data.database import Database
+
 class Contact:
-    contacts_file_path = os.path.dirname(os.path.abspath(__file__)) + '/contacts.csv'
+    DATABASE_NAME = "freegamesnewsletter"
+    TABLE_NAME = "contacts"
 
     def __init__(self, email):
         self.email = email
     
+    def insert_in_db(self):
+        insert_value = {
+            'email': self.email
+        }
+        Database(Contact.DATABASE_NAME).insert_one(self.TABLE_NAME, insert_value)
+
     @staticmethod
     def get_contacts():
-        contact_list = []
-        
-        with open(Contact.contacts_file_path) as f:
-            csv_reader = csv.reader(f, delimiter=',')
-            for row in csv_reader:
-                contact_email = row[0]
-                contact = Contact(contact_email)
-                contact_list.append(contact)
-
-        return contact_list
+        query = Database(Contact.DATABASE_NAME).select_all(Contact.TABLE_NAME)
+        return [Contact(row['email']) for row in query]
