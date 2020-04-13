@@ -30,7 +30,7 @@ class MailSender:
 
     def _generate_message(self, receiver):
         message = MIMEMultipart("alternative")
-        message["Subject"] = "These games are free-to-keep on Steam today"
+        message["Subject"] = "These games are free-to-keep today"
         message["From"] = self.sender_email
         message["To"] = receiver.email
 
@@ -44,12 +44,25 @@ class MailSender:
         return message
     
     def _generate_text_message(self, games_list):
-        msg = ""
+        msg = "Hello!\nThese games are free to grab and keep forever:\n\n"
         for game in games_list:
             msg += f"{game.name}: {game.url}\n"
         
         return msg
 
     def _generate_html_message(self, games_list):
-        # TODO
-        return self._generate_text_message(games_list)
+        msg = ""
+        for game in games_list:
+            msg += f"<div><a href='{game.url}'>{game.name}</a></div>"
+
+        html = f"""\
+            <body>
+                <p> Hello!<br>
+                    These games are free to grab and keep forever:
+                </p>
+                <div>
+                    {msg}
+                </div>
+            </body>
+        """
+        return html
