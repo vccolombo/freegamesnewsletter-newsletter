@@ -1,5 +1,6 @@
 import os
 from pymongo import MongoClient, errors
+import logging
 
 class Database:
     DOMAIN = "localhost"
@@ -11,31 +12,28 @@ class Database:
         try:
             self.db = MongoClient(self.DOMAIN, self.PORT)[database]
         except errors.ServerSelectionTimeoutError as err:
-            # TODO: Log some error
-            print(err)
+            logging.error(err)
             return
     
     def insert_one(self, table, data):
         if self.db is None:
-            # TODO: Log some error
+            logging.error(f"COULDN'T INSERT {data}: db is not initialized")
             return
         
         try:
             test = self.db[table]
             test.insert_one(data)
         except errors.PyMongoError as err:
-            # TODO: Log some error
-            print(err)
+            logging.error("COULDN'T INSERT {data}: " + err)
     
     def select_all(self, table):
         if self.db is None:
-            # TODO: Log some error
+            logging.error(f"COULDN'T SELECT ALL FROM {table}: db is not initialized")
             return []
 
         try:
             cursor = self.db[table].find()
             return [document for document in cursor]
         except errors.PyMongoError as err:
-            # TODO: Log some error
-            print(err)
+            logging.error("COULDN'T SELECT ALL FROM {table}: " + err)
             return []
