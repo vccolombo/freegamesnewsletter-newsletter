@@ -1,8 +1,11 @@
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+import calendar
 import os
 import logging
+
 
 from game import Game
 
@@ -13,10 +16,6 @@ class MailSender:
     # smtp configs
     smtp_domain = "smtp.gmail.com"
     smtp_port = 465
-
-    # headers
-    email_subject = "These games are free-to-keep today"
-    email_priority = "3"
 
     def send(self, contact_list):
         smtp_client = self._create_smtp_connection()
@@ -55,9 +54,9 @@ class MailSender:
 
     def _generate_message(self, games_list):
         message = MIMEMultipart("alternative")
-        message["Subject"] = self.email_subject
         message["From"] = self.sender_email
-        message["X-Priority"] = self.email_priority
+        message["Subject"] = self._generate_subject()
+        message["X-Priority"] = "3"
 
         text_msg = self._generate_text_message(games_list)
         html_msg = self._generate_html_message(games_list)
@@ -67,6 +66,13 @@ class MailSender:
 
         return message
     
+    def _generate_subject(self):
+        today = datetime.now()
+        day = str(today.day)
+        month = calendar.month_abbr[today.month]
+
+        return f"Free-to-keep games {day} {month}"
+
     def _generate_text_message(self, games_list):
         msg = "Hello!\nThese games are free to grab and keep forever:\n\n"
         for game in games_list:
