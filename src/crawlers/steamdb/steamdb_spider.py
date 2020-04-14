@@ -7,7 +7,7 @@ class SteamdbSpider(scrapy.Spider):
     steam_url = 'https://store.steampowered.com'
 
     def start_requests(self):
-        start_urls = ['https://steamdb.info/sales/?min_discount=95&min_rating=0']
+        start_urls = ['https://web.archive.org/web/20200401214909/https://steamdb.info/sales/']
         for url in start_urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
