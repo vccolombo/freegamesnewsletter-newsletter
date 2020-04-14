@@ -14,7 +14,7 @@ class SteamdbSpider(scrapy.Spider):
     def parse(self, response):
         games_on_sale = self._get_list_of_games_on_sale(response)
         free_games = self._get_free_games(games_on_sale)
-        Game.write_games_to_file(free_games)
+        Game.save_todays_free_games(free_games)
 
     def _get_list_of_games_on_sale(self, response):
         sales_section = response.css('div.sales-section')
