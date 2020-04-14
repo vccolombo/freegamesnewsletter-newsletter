@@ -10,11 +10,12 @@ class Contact:
     def __init__(self, email):
         self.email = email
     
-    def insert_in_db(self):
+    def insert_or_update(self):
         insert_value = {
             'email': self.email
         }
-        Database(Contact.DATABASE_NAME).insert_one(self.TABLE_NAME, insert_value)
+        db = Database(self.DATABASE_NAME)
+        db.insert_or_update_one(self.TABLE_NAME, insert_value, update_key='email')
 
     @staticmethod
     def get_contacts():
