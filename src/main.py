@@ -1,11 +1,11 @@
 from crawlers.crawler import Crawler
-from email_sender.contact import Contact
+from email_sender.subscriber import Subscriber
 from email_sender.mail_sender import MailSender
 
 def main():
     Crawler().run()
-    contact_list = Contact.get_contacts()
-    MailSender().send(contact_list)
+    subscriber_list = Subscriber.get_contacts()
+    MailSender().send(subscriber_list)
 
 if __name__ == '__main__':
     main()
