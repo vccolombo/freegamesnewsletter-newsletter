@@ -6,7 +6,6 @@ import calendar
 import os
 import logging
 
-
 from game import Game
 
 class MailSender:

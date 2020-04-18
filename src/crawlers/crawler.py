@@ -1,20 +1,20 @@
 import scrapy
 from scrapy.crawler import CrawlerProcess
+import os
 
-from .steamdb.steamdb_spider import SteamdbSpider
+from .steam import spider as steam
 
 class Crawler:
+    DATA_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + '/data/'
     configs = {
-        'USER_AGENT': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0',
-        'DOWNLOAD_DELAY': 5,
-        'CONCURRENT_REQUESTS': 1
+        'FEED_FORMAT': 'json',
+        'FEED_URI': DATA_DIR_PATH + 'test.json'
     }
 
     def run(self):
-        self.crawl_steamdb()
+        self._crawl_steam()
 
-    def crawl_steamdb(self):
+    def _crawl_steam(self):
         process = CrawlerProcess(self.configs)
-
-        process.crawl(SteamdbSpider)
+        process.crawl(steam.Spider)
         process.start()

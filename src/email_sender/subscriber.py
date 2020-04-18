@@ -1,7 +1,7 @@
 import csv
 import os
 
-from data.database import Database
+from db.database import Database
 
 class Subscriber:
     DATABASE_NAME = "freegamesnewsletter"
