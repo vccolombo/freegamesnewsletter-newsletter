@@ -9,6 +9,9 @@ from .steam import spider as steam
 class Crawler:
     DATA_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + '/data/'
     CONFIGS = {
+        'USER_AGENT': 'freegamesnewsletter-crawler (contact@freegamesnewsletter.tech)',
+        'AUTOTHROTTLE_ENABLED': True,
+        'AUTOTHROTTLE_TARGET_CONCURRENCY': 4,
         'FEED_FORMAT': 'json',
         'FEED_URI': DATA_DIR_PATH + 'today_games.json',
         'LOG_LEVEL': 'INFO'
