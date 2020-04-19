@@ -28,18 +28,18 @@ class Spider(scrapy.Spider):
 
     def _is_game_free(self, game):
         discount = game.xpath('.//div[contains(@class, "search_discount")]/span/text()').get()
-        return discount == '-80%'
+        return discount == '-100%'
 
     def _get_game_url(self, game):
         return game.xpath('./@href').get()
 
     def _parse_game(self, response):
-        title = response.xpath('//div[@class="apphub_AppName"]/text()').get()
+        name = response.xpath('//div[@class="apphub_AppName"]/text()').get()
         game_url = response.url
         image_url = response.xpath('//img[@class="game_header_image_full"]/@src').get()
         description = response.xpath('//div[@class="game_description_snippet"]/text()').get()
         yield {
-            'title': title,
+            'name': name,
             'url': game_url,
             'image': image_url,
             'description': description.strip()
