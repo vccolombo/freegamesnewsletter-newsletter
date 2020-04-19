@@ -5,16 +5,27 @@ from datetime import datetime
 import calendar
 import os
 import logging
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from bs4 import BeautifulSoup
 
 from game import Game
 
 class MailSender:
+    TEMPLATES_PATH = os.path.dirname(os.path.abspath(__file__)) + '/templates/'
+
     sender_email = "freegamesnewsletter@gmail.com"
     sender_password = os.environ["FREEGAMESNEWSLETTER_PASSWORD"]
 
     # smtp configs
     smtp_domain = "smtp.gmail.com"
     smtp_port = 465
+
+    def __init__(self):
+        jinja_env = Environment(
+            loader=FileSystemLoader(self.TEMPLATES_PATH),
+            autoescape=select_autoescape(['html', 'xml'])
+        )
+        self.html_template = jinja_env.get_template('newsletter.html')
 
     def send(self, contact_list):
         smtp_client = self._create_smtp_connection()
@@ -57,8 +68,8 @@ class MailSender:
         message["Subject"] = self._generate_subject()
         message["X-Priority"] = "3"
 
-        text_msg = self._generate_text_message(games_list)
         html_msg = self._generate_html_message(games_list)
+        text_msg = self._generate_text_message_from_html(html_msg)
 
         message.attach(MIMEText(text_msg, "plain"))
         message.attach(MIMEText(html_msg, "html"))
@@ -72,28 +83,13 @@ class MailSender:
 
         return f"Free-to-keep games {day} {month}"
 
-    def _generate_text_message(self, games_list):
-        msg = "Hello!\nThese games are free to grab and keep forever:\n\n"
-        for game in games_list:
-            msg += f"{game.name}: {game.url}\n"
-        
-        return msg
+    def _generate_text_message_from_html(self, html):
+        soup = BeautifulSoup(html)
+        text = soup.get_text()
+        return text
 
     def _generate_html_message(self, games_list):
-        msg = ""
-        for game in games_list:
-            msg += f"<div><a href='{game.url}'>{game.name}</a></div>"
-
-        html = f"""\
-            <body>
-                <p> Hello!<br>
-                    These games are free to grab and keep forever:
-                </p>
-                <div>
-                    {msg}
-                </div>
-            </body>
-        """
+        html = self.html_template.render(games=games_list)
         return html
 
     def _send_mail(self, receiver, message, smtp_client):

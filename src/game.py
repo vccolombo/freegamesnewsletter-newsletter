@@ -5,10 +5,10 @@ import logging
 class Game:
     DATA_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + '/crawlers/data/'
 
-    def __init__(self, name, url, image_url, description):
+    def __init__(self, name, url, image, description):
         self.name = name
         self.url = url
-        self.image_url = image_url
+        self.image = image
         self.description = description
     
     @staticmethod

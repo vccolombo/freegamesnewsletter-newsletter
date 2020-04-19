@@ -11,6 +11,8 @@ rope = "*"
 scrapy = "*"
 pymongo = "*"
 furl = "*"
+jinja2 = "*"
+beautifulsoup4 = "*"
 
 [requires]
 python_version = "3.6"

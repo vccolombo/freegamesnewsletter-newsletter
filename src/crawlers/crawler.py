@@ -14,7 +14,7 @@ class Crawler:
         'AUTOTHROTTLE_TARGET_CONCURRENCY': 2,
         'FEED_FORMAT': 'json',
         'FEED_URI': DATA_DIR_PATH + 'today_games.json',
-        'LOG_LEVEL': 'INFO'
+        'LOG_LEVEL': 'INFO',
     }
 
     def run_newsletter(self):
