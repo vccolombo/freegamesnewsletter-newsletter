@@ -1,6 +1,5 @@
 import scrapy
-import urllib.parse as urlparse
-from urllib.parse import parse_qs
+from furl import furl
 
 class Spider(scrapy.Spider):
     name = 'Steam'
@@ -35,7 +34,7 @@ class Spider(scrapy.Spider):
 
     def _parse_game(self, response):
         name = response.xpath('//div[@class="apphub_AppName"]/text()').get()
-        game_url = response.url
+        game_url = furl(response.url).remove(args=True).url
         image_url = response.xpath('//img[@class="game_header_image_full"]/@src').get()
         description = response.xpath('//div[@class="game_description_snippet"]/text()').get()
         yield {

@@ -10,6 +10,7 @@ rope = "*"
 [packages]
 scrapy = "*"
 pymongo = "*"
+furl = "*"
 
 [requires]
 python_version = "3.6"
