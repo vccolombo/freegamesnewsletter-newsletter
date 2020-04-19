@@ -11,7 +11,7 @@ class Crawler:
     CONFIGS = {
         'USER_AGENT': 'freegamesnewsletter-crawler (contact@freegamesnewsletter.tech)',
         'AUTOTHROTTLE_ENABLED': True,
-        'AUTOTHROTTLE_TARGET_CONCURRENCY': 4,
+        'AUTOTHROTTLE_TARGET_CONCURRENCY': 2,
         'FEED_FORMAT': 'json',
         'FEED_URI': DATA_DIR_PATH + 'today_games.json',
         'LOG_LEVEL': 'INFO'
