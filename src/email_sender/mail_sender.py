@@ -84,7 +84,7 @@ class MailSender:
         return f"Free-to-keep games {day} {month}"
 
     def _generate_text_message_from_html(self, html):
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "lxml")
         text = soup.get_text()
         return text
 
