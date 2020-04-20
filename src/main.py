@@ -1,3 +1,5 @@
+import logging
+
 from crawlers.crawler import Crawler
 from email_sender.subscriber import Subscriber
 from email_sender.mail_sender import MailSender
@@ -8,4 +10,5 @@ def main():
     MailSender().send(subscriber_list)
 
 if __name__ == '__main__':
+    logging.getLogger().setLevel(logging.INFO)
     main()
