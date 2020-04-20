@@ -33,9 +33,8 @@ class MailSender:
         games_to_send = self._get_games_to_send()
         if games_to_send:
             logging.info(f"Sending {len(games_to_send)} games...")
-            message = self._generate_message(games_to_send)
             for receiver in contact_list:
-                message["To"] = receiver.email
+                message = self._generate_message(receiver, games_to_send)
                 self._send_mail(receiver, message, smtp_client)
         else:
             logging.info("No games to send today")
@@ -62,9 +61,10 @@ class MailSender:
     def _game_was_sent_yesterday(self, game, yesterday_games):
         return any(game.name == yesterday_game.name for yesterday_game in yesterday_games)
 
-    def _generate_message(self, games_list):
+    def _generate_message(self, receiver, games_list):
         message = MIMEMultipart("alternative")
         message["From"] = self.sender_email
+        message["To"] = receiver.email
         message["Subject"] = self._generate_subject()
         message["X-Priority"] = "3"
 
