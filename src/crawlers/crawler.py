@@ -1,5 +1,6 @@
 import scrapy
-from scrapy.crawler import CrawlerProcess
+from twisted.internet import reactor
+from scrapy.crawler import CrawlerRunner
 import os
 import shutil
 import logging
@@ -35,6 +36,7 @@ class Crawler:
         self._crawl_steam()
 
     def _crawl_steam(self):
-        process = CrawlerProcess(self.CONFIGS)
-        process.crawl(steam.Spider)
-        process.start()
+        runner = CrawlerRunner(Crawler.CONFIGS)
+        d = runner.crawl(steam.Spider)
+        d.addBoth(lambda _: reactor.stop())
+        reactor.run() # the script will block here until the crawling is finished
