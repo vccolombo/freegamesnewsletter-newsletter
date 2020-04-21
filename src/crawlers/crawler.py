@@ -17,6 +17,8 @@ class Crawler:
         'LOG_LEVEL': 'INFO',
     }
 
+    logger = logging.getLogger(__name__)
+
     def run_newsletter(self):
         self._save_yesterday_results()
         self._run()
@@ -27,7 +29,7 @@ class Crawler:
         try:
             shutil.move(src, dst)
         except FileNotFoundError as err:
-            logging.warn('COULD NOT SAVE YESTERDAY GAMES: ' + str(err))
+            Crawler.logger.warn('COULD NOT SAVE YESTERDAY GAMES: ' + str(err))
 
     def _run(self):
         self._crawl_steam()

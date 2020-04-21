@@ -6,17 +6,18 @@ class Database:
     DOMAIN = "localhost"
     PORT = 27017
 
-    db = None
+    logger = logging.getLogger(__name__)
 
     def __init__(self, database):
+        self.db = None
         try:
             self.db = MongoClient(self.DOMAIN, self.PORT)[database]
-        except errors.ServerSelectionTimeoutError as err:
-            logging.error(err)
+        except errors.PyMongoError as err:
+            Database.logger.error(err)
     
     def insert_or_update_one(self, table, data, update_key=None):
         if self.db is None:
-            logging.error(f"COULDN'T INSERT {data}: db is not initialized")
+            Database.logger.error(f"COULDN'T INSERT {data}: db is not initialized")
             return
         
         try:
@@ -27,7 +28,7 @@ class Database:
             else:
                 self._insert_one(data, collection)
         except errors.PyMongoError as err:
-            logging.error(f"COULDN'T INSERT {data}: " + err)
+            Database.logger.error(f"COULDN'T INSERT {data}: " + err)
     
     def _update_one(self, key, data, collection):
         data = {'$set': data}
@@ -38,12 +39,12 @@ class Database:
 
     def select_all(self, table):
         if self.db is None:
-            logging.error(f"COULDN'T SELECT ALL FROM {table}: db is not initialized")
+            Database.logger.error(f"COULDN'T SELECT ALL FROM {table}: db is not initialized")
             return []
 
         try:
             cursor = self.db[table].find()
             return [document for document in cursor]
         except errors.PyMongoError as err:
-            logging.error(f"COULDN'T SELECT ALL FROM {table}: " + err)
+            Database.logger.error(f"COULDN'T SELECT ALL FROM {table}: " + err)
             return []

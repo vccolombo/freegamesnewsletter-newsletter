@@ -5,6 +5,8 @@ import logging
 class Game:
     DATA_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + '/crawlers/data/'
 
+    logger = logging.getLogger(__name__)
+
     def __init__(self, name, url, image, description):
         self.name = name
         self.url = url
@@ -32,8 +34,8 @@ class Game:
                 new_game = Game(game['name'], game['url'], game['image'], game['description'])
                 games.append(new_game)
         except FileNotFoundError as err:
-            logging.warn("COULD NOT LOAD GAMES FROM FILE: " + str(err))
+            Game.logger.warn("COULD NOT LOAD GAMES FROM FILE: " + str(err))
         except Exception as err:
-            logging.error(str(err))
+            Game.logger.error(str(err))
 
         return games

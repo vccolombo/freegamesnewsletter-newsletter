@@ -13,6 +13,8 @@ from game import Game
 class MailSender:
     TEMPLATES_PATH = os.path.dirname(os.path.abspath(__file__)) + '/templates/'
 
+    logger = logging.getLogger(__name__)
+
     sender_email = "freegamesnewsletter@gmail.com"
     sender_password = os.environ["FREEGAMESNEWSLETTER_PASSWORD"]
 
@@ -32,12 +34,12 @@ class MailSender:
         
         games_to_send = self._get_games_to_send()
         if games_to_send:
-            logging.info(f"Sending {len(games_to_send)} games...")
+            MailSender.logger.info(f"Sending {len(games_to_send)} games...")
             for receiver in contact_list:
                 message = self._generate_message(receiver, games_to_send)
                 self._send_mail(receiver, message, smtp_client)
         else:
-            logging.info("No games to send today")
+            MailSender.logger.info("No games to send today")
             
         smtp_client.quit()
 
