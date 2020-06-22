@@ -22,6 +22,8 @@ class MailSender:
     smtp_domain = "smtp.gmail.com"
     smtp_port = 465
 
+    site_url = "https://www.freegamesnewsletter.tech"
+
     def __init__(self):
         jinja_env = Environment(
             loader=FileSystemLoader(self.TEMPLATES_PATH),
@@ -70,7 +72,7 @@ class MailSender:
         message["Subject"] = self._generate_subject()
         message["X-Priority"] = "3"
 
-        html_msg = self._generate_html_message(games_list)
+        html_msg = self._generate_html_message(games_list, receiver)
         text_msg = self._generate_text_message_from_html(html_msg)
 
         message.attach(MIMEText(text_msg, "plain"))
@@ -90,9 +92,13 @@ class MailSender:
         text = soup.get_text()
         return text
 
-    def _generate_html_message(self, games_list):
-        html = self.html_template.render(games=games_list)
+    def _generate_html_message(self, games_list, subscriber):
+        unsubscribe_url = self._get_unsubscribe_url(subscriber)
+        html = self.html_template.render(games=games_list, unsubscribe_url=unsubscribe_url)
         return html
+
+    def _get_unsubscribe_url(self, subscriber):
+        return self.site_url + f"/unsubscribe?email={subscriber.email}&code={subscriber.unsubscribe_code}"
 
     def _send_mail(self, receiver, message, smtp_client):
         receiver_email = receiver.email

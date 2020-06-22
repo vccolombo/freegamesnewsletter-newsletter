@@ -16,6 +16,7 @@ class Crawler:
         'FEED_FORMAT': 'json',
         'FEED_URI': DATA_DIR_PATH + 'today_games.json',
         'LOG_LEVEL': 'INFO',
+        # 'HTTPCACHE_ENABLED': True
     }
 
     logger = logging.getLogger(__name__)
