@@ -8,12 +8,12 @@ pylint = "*"
 rope = "*"
 
 [packages]
-scrapy = "*"
-pymongo = "*"
-furl = "*"
-jinja2 = "*"
-beautifulsoup4 = "*"
-lxml = "*"
+scrapy = "~=2.0"
+pymongo = "~=3.10"
+furl = "~=2.1"
+jinja2 = "~=2.11"
+beautifulsoup4 = "~=4.9"
+lxml = "~=4.5"
 
 [requires]
 python_version = "3.6"
