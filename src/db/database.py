@@ -4,14 +4,18 @@ import logging
 
 class Database:
     DOMAIN = "mongodb"
-    PORT = 27017
+    MONGODB_USER = os.environ["MONGODB_USER"]
+    MONGODB_PASS = os.environ["MONGODB_PASS"]
 
     logger = logging.getLogger(__name__)
 
     def __init__(self, database):
         self.db = None
         try:
-            self.db = MongoClient(self.DOMAIN, self.PORT)[database]
+            self.db = MongoClient(
+                host=self.DOMAIN, 
+                username=self.MONGODB_USER,
+                password=self.MONGODB_PASS)[database]
         except errors.PyMongoError as err:
             Database.logger.error(err)
     
