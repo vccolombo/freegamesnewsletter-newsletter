@@ -3,7 +3,7 @@ from pymongo import MongoClient, errors
 import logging
 
 class Database:
-    DOMAIN = "localhost"
+    DOMAIN = "mongodb"
     PORT = 27017
 
     logger = logging.getLogger(__name__)
@@ -27,8 +27,8 @@ class Database:
                 self._update_one(key, data, collection)
             else:
                 self._insert_one(data, collection)
-        except errors.PyMongoError as err:
-            Database.logger.error(f"COULDN'T INSERT {data}: " + err)
+        except errors.PyMongoError:
+            Database.logger.error(f"COULDN'T INSERT {data}")
     
     def _update_one(self, key, data, collection):
         data = {'$set': data}
@@ -45,6 +45,6 @@ class Database:
         try:
             cursor = self.db[table].find()
             return [document for document in cursor]
-        except errors.PyMongoError as err:
-            Database.logger.error(f"COULDN'T SELECT ALL FROM {table}: " + err)
+        except errors.PyMongoError:
+            Database.logger.error(f"COULDN'T SELECT ALL FROM {table}")
             return []

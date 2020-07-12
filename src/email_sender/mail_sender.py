@@ -16,7 +16,7 @@ class MailSender:
     logger = logging.getLogger(__name__)
 
     sender_email = "freegamesnewsletter@gmail.com"
-    sender_password = os.environ["FREEGAMESNEWSLETTER_PASSWORD"]
+    sender_password = os.environ["EMAIL_PASS"]
 
     # smtp configs
     smtp_domain = "smtp.gmail.com"
