@@ -1,0 +1,6 @@
+scrapy~=2.0
+pymongo~=3.10
+furl~=2.1
+jinja2~=2.11
+beautifulsoup4~=4.9
+lxml~=4.5
