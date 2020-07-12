@@ -6,9 +6,10 @@ import shutil
 import logging
 
 from .steam import spider as steam
+from game import Game
 
 class Crawler:
-    DATA_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + '/data/'
+    DATA_DIR_PATH = Game.DATA_DIR_PATH
     CONFIGS = {
         'USER_AGENT': 'freegamesnewsletter-crawler (contact@freegamesnewsletter.tech)',
         'AUTOTHROTTLE_ENABLED': True,

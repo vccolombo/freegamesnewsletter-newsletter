@@ -3,7 +3,7 @@ import os
 import logging
 
 class Game:
-    DATA_DIR_PATH = os.path.dirname(os.path.abspath(__file__)) + '/crawlers/data/'
+    DATA_DIR_PATH = os.environ["GAMES_PATH"]
 
     logger = logging.getLogger(__name__)
 
