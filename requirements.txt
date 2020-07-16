@@ -4,3 +4,4 @@ furl~=2.1
 jinja2~=2.11
 beautifulsoup4~=4.9
 lxml~=4.5
+pika~=1.1
