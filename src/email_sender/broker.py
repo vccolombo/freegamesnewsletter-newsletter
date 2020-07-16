@@ -7,6 +7,7 @@ class EmailBroker:
     RABBITMQ_USER = os.environ["RABBITMQ_USER"]
     RABBITMQ_PASS = os.environ["RABBITMQ_PASS"]
     QUEUE = "emails"
+    PIKA_PROPERTIES = pika.BasicProperties(delivery_mode = 2)
 
     logger = logging.getLogger(__name__)
 
@@ -37,9 +38,11 @@ class EmailBroker:
                 "html": html
             }
             self._channel.basic_publish(
-                exchange='', routing_key=self.QUEUE, body=json.dumps(msg))
+                exchange='', routing_key=self.QUEUE, body=json.dumps(msg),
+                properties=self.PIKA_PROPERTIES)
         except pika.exceptions.ConnectionClosed:
             self.logger.warn("Reconnecting to queue")
             self.connect()
             self._channel.basic_publish(
-                exchange='', routing_key=self.QUEUE, body=json.dumps(msg))
+                exchange='', routing_key=self.QUEUE, body=json.dumps(msg),
+                properties=self.PIKA_PROPERTIES)
