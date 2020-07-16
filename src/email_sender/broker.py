@@ -6,8 +6,8 @@ import os
 class EmailBroker:
     RABBITMQ_USER = os.environ["RABBITMQ_USER"]
     RABBITMQ_PASS = os.environ["RABBITMQ_PASS"]
+    CONN_URL = "rabbitmq"
     QUEUE = "emails"
-    PIKA_PROPERTIES = pika.BasicProperties(delivery_mode = 2)
 
     logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ class EmailBroker:
         credentials = pika.PlainCredentials(
             self.RABBITMQ_USER, self.RABBITMQ_PASS)
         self._params = pika.ConnectionParameters(
-            "rabbitmq", 5672, '/', credentials)
+            self.CONN_URL, 5672, '/', credentials)
         self._conn = None
         self._channel = None
 
@@ -31,6 +31,7 @@ class EmailBroker:
             self._conn.close()
 
     def publish_email(self, receiver_email, subject, html):
+        properties = pika.BasicProperties(delivery_mode = 2)
         try:
             msg = {
                 "email": receiver_email,
@@ -38,11 +39,11 @@ class EmailBroker:
                 "html": html
             }
             self._channel.basic_publish(
-                exchange='', routing_key=self.QUEUE, body=json.dumps(msg),
-                properties=self.PIKA_PROPERTIES)
+                exchange='', routing_key=self.QUEUE, 
+                body=json.dumps(msg), properties=properties)
         except pika.exceptions.ConnectionClosed:
             self.logger.warn("Reconnecting to queue")
             self.connect()
             self._channel.basic_publish(
-                exchange='', routing_key=self.QUEUE, body=json.dumps(msg),
-                properties=self.PIKA_PROPERTIES)
+                exchange='', routing_key=self.QUEUE, 
+                body=json.dumps(msg), properties=properties)
