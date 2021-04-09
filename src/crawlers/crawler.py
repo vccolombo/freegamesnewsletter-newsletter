@@ -8,10 +8,11 @@ import logging
 from .steam import spider as steam
 from game import Game
 
+
 class Crawler:
     DATA_DIR_PATH = Game.DATA_DIR_PATH
     CONFIGS = {
-        'USER_AGENT': 'freegamesnewsletter-crawler (contact@freegamesnewsletter.tech)',
+        'USER_AGENT': 'freegamesnewsletter-crawler (newsletter@freegamesnewsletter.com)',
         'AUTOTHROTTLE_ENABLED': True,
         'AUTOTHROTTLE_TARGET_CONCURRENCY': 2,
         'FEED_FORMAT': 'json',
@@ -41,4 +42,4 @@ class Crawler:
         runner = CrawlerRunner(Crawler.CONFIGS)
         d = runner.crawl(steam.Spider)
         d.addBoth(lambda _: reactor.stop())
-        reactor.run() # the script will block here until the crawling is finished
+        reactor.run()  # the script will block here until the crawling is finished
